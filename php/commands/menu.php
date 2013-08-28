@@ -16,6 +16,28 @@ class Menu_Command extends WP_CLI_Command {
      * <file>
      * : Path to a valid json file for importing.
 	 *
+	 * json object should be in the form:
+	 * [
+	 *   {
+	 *     location : "theme location menu should be assigned to (optional)"
+	 *     name : "Menu Name"
+	 *     items :
+	 *     [
+	 *       {
+	 *         slug : "required-for-nested-menu--always-recommended"
+	 *         parent : "parent-menu-item-slug--parent-must-be-defined-before-children"
+	 *         title : "Not always required but highly recommended"
+	 *         page : "only-if-menu-points-to-page"
+	 *         taxonomy : "only_if_pointing_to_term"
+	 *         term : "the Term"
+	 *         url : "http://domain.com/fully/qualified/" OR "/relative/"
+	 *       },
+	 *       { ... additional menu items ... }
+	 *     ]
+	 *   },
+	 *   { ... additional menus ... }
+	 * ]
+	 *
 	 * <mode>
 	 * : update = matching menus and menu items overwritten. skip = matching items skipped, missing items skipped. append = matching skipped, new items added
 	 *
@@ -96,11 +118,11 @@ class Menu_Command extends WP_CLI_Command {
 				);
 
 				if ( isset( $item->page ) && $page = get_page_by_path( $item->page ) ) { // @todo support lookup by title
-					$item_array['menu-item-object']    = 'page'; $page = new WP_Post( 1 );
+					$item_array['menu-item-object']    = 'page';
 					$item_array['menu-item-type']      = 'post_type';
 					$item_array['menu-item-object-id'] = $page->ID;
 					$item_array['menu-item-title']     = ( $item_array['menu-item-title'] ) ?: $page->post_title;
-				} elseif ( isset ( $item->taxonomy ) ) {
+				} elseif ( isset ( $item->taxonomy ) && isset( $item->term ) ) {
 
 				} elseif ( isset( $item->url ) ) {
 					$item_array['menu-item-url']   = ( 'http' == substr( $item->url, 0, 4 ) ) ? esc_url( $item->url ) : home_url( $item->url );
