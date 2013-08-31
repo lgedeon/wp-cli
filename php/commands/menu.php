@@ -20,7 +20,7 @@ class Menu_Command extends WP_CLI_Command {
 	 * [
 	 *   {
 	 *     location : "theme location menu should be assigned to (optional)"
-	 *     name : "Menu Name"
+	 *     name : "Menu Name Required"
 	 *     items :
 	 *     [
 	 *       {
@@ -76,8 +76,9 @@ class Menu_Command extends WP_CLI_Command {
 	 * Import menu content from a json file.
 	 *
 	 * @param string $file Name of json file to import. (might allow just passing the json string here later)
-	 * @param string $missing
-	 * @param string $default
+	 * @param string $mode - not yet implemented
+	 * @param string $missing - not yet implemented
+	 * @param string $default - not yet implemented
 	 */
 	public function import_json( $file, $mode = 'append', $missing = 'skip', $default = null ) {
 		$string      = file_get_contents( $file );
@@ -114,16 +115,18 @@ class Menu_Command extends WP_CLI_Command {
 				$item_array = array(
 					'menu-item-title' => ( isset( $item->title ) ? $item->title : false ),
 					'menu-item-status' => 'publish'
-
 				);
 
 				if ( isset( $item->page ) && $page = get_page_by_path( $item->page ) ) { // @todo support lookup by title
-					$item_array['menu-item-object']    = 'page';
 					$item_array['menu-item-type']      = 'post_type';
+					$item_array['menu-item-object']    = 'page';
 					$item_array['menu-item-object-id'] = $page->ID;
 					$item_array['menu-item-title']     = ( $item_array['menu-item-title'] ) ?: $page->post_title;
-				} elseif ( isset ( $item->taxonomy ) && isset( $item->term ) ) {
-
+				} elseif ( isset ( $item->taxonomy ) && isset( $item->term ) && $term = get_term_by( 'slug', $item->term, $item->taxonomy ) ) {
+					$item_array['menu-item-type']      = 'taxonomy';
+					$item_array['menu-item-object']    = $term->taxonomy;
+					$item_array['menu-item-object-id'] = $term->term_id;
+					$item_array['menu-item-title'] = ( $item_array['menu-item-title'] ) ?: $term->name;
 				} elseif ( isset( $item->url ) ) {
 					$item_array['menu-item-url']   = ( 'http' == substr( $item->url, 0, 4 ) ) ? esc_url( $item->url ) : home_url( $item->url );
 					$item_array['menu-item-title'] = ( $item_array['menu-item-title'] ) ?: $item->url;
