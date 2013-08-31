@@ -19,18 +19,18 @@ class Menu_Command extends WP_CLI_Command {
 	 * json object should be in the form:
 	 * [
 	 *   {
-	 *     location : "theme location menu should be assigned to (optional)"
-	 *     name : "Menu Name Required"
-	 *     items :
+	 *     "location" : "theme location menu should be assigned to (optional)",
+	 *     "name" : "Menu Name Required",
+	 *     "items" :
 	 *     [
 	 *       {
-	 *         slug : "required-for-nested-menu--always-recommended"
-	 *         parent : "parent-menu-item-slug--parent-must-be-defined-before-children"
-	 *         title : "Not always required but highly recommended"
-	 *         page : "only-if-menu-points-to-page"
-	 *         taxonomy : "only_if_pointing_to_term"
-	 *         term : "the Term"
-	 *         url : "http://domain.com/fully/qualified/" OR "/relative/"
+	 *         "slug" : "required-for-nested-menu--always-recommended",
+	 *         "parent" : "parent-menu-item-slug--parent-must-be-defined-before-children",
+	 *         "title" : "Not always required but highly recommended",
+	 *         "page" : "only-if-menu-points-to-page",
+	 *         "taxonomy" : "only_if_pointing_to_term",
+	 *         "term" : "the Term",
+	 *         "url" : "http://domain.com/fully/qualified/" OR "/relative/"
 	 *       },
 	 *       { ... additional menu items ... }
 	 *     ]
